@@ -13,6 +13,17 @@
     <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Test HCE"
-            android:id="@+id/button" android:layout_alignParentTop="true" android:layout_centerHorizontal="true"/>
+            android:text="@string/buttonText"
+            android:id="@+id/button"
+            android:onClick="showTestID"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentEnd="false" android:layout_alignParentTop="true"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="default text"
+            android:id="@+id/textview"
+            android:layout_alignBottom="@id/button"/>
+
 </RelativeLayout>

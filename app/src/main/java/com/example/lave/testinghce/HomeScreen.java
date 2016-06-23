@@ -10,9 +10,9 @@ import com.example.lave.testinghce.CTProduct;
 
 public class HomeScreen extends AppCompatActivity {
 
-    private Button button;
-    private TextView tv;
-    private CTProduct ctProduct;
+    private static Button button;
+    private static TextView tv;
+    private static CTProduct ctProduct;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,8 +24,13 @@ public class HomeScreen extends AppCompatActivity {
        ctProduct = new CTProduct();
     }
 
-    public void showTestID(View view)
+    public static void showTestID(View view)
     {
         tv.setText(ctProduct.getTestIDString());
+    }
+
+    public static void setButtonText(String text)
+    {
+        button.setText(text);
     }
 }

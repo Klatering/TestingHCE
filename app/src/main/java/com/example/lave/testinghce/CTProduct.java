@@ -5,33 +5,106 @@ package com.example.lave.testinghce;
  */
 public class CTProduct {
 
-    private byte[] testID = {0x0A, (byte)0xBC, (byte)0xDE, (byte)0xF1};
+    private final int PAGE_SIZE = 4; //A page consists of 4 bytes
+    private final int BLOCK_SIZE = 4; //A block consists of 4 pages
+    private final int UID_BYTE_SIZE = 7; //An UID consists of 7 bytes
+    private final int HEADER_OFFSET = 0;
+    private final int EVENT1_OFFSET = 1;
+    private final int EVENT2_OFFSET = 2;
+    private final int CONTRACT_OFFSET =3;
 
-    public byte[] getTestID()
+    private CTDataBlock header;
+    private CTDataBlock event1;
+    private CTDataBlock event2;
+    private CTDataBlock contract;
+
+    public CTProduct(CTDataBlock h, CTDataBlock ev1, CTDataBlock ev2, CTDataBlock c)
     {
-        return testID;
+        header = h;
+        event1 = ev1;
+        event2 = ev2;
+        contract = c;
     }
 
-    public String getTestIDString()
+    /**
+     * UID consists of 7 bytes
+     * @return UID in byte[7] extracted from header
+     */
+    public byte[] getUID()
     {
-        String format = "0x%02X ";
-        int i1 = testID[0] & 0xff;
-        String s1 = String.format(format, i1);
-        int i2 = testID[1] & 0xff;
-        String s2 = String.format(format, i2);
-        int i3 = testID[2] & 0xff;
-        String s3 = String.format(format, i3);
-        int i4 = testID[3] & 0xff;
-        String s4 = String.format(format, i4);
-
-        return s1 + s2 + s3 + s4;
+        byte[] r = new byte[UID_BYTE_SIZE];
+        for(int i = 0; i < 3; i++)
+        {
+            r[i] = header.getPage(0x00)[i];
+        }
+        for (int i = 3; i < 7; i++)
+        {
+            r[i] = header.getPage(0x01)[i-3];
+        }
+        return r;
     }
 
-    public void writeID(byte[] newPage)
+    /**
+     *
+     * @param offSet is pageNumber of first page to read
+     * @return byte[16] counting from offset and up.
+     *
+     */
+    public byte[] readPages(int offSet)
     {
+        byte[] res = new byte[0];
+        int blockOffSet;
+        for(int i = 0; i < BLOCK_SIZE; i++)
+        {
+            blockOffSet = offSet/BLOCK_SIZE;
+            if(blockOffSet == HEADER_OFFSET)
+            {
+                res = ByteUtilities.ConcatArrays(header.getPage(offSet%PAGE_SIZE));
+            }
+            else if(blockOffSet == EVENT1_OFFSET)
+            {
+                res = ByteUtilities.ConcatArrays(event1.getPage(offSet%PAGE_SIZE));
+            }
+            else if(blockOffSet == EVENT2_OFFSET)
+            {
+                res = ByteUtilities.ConcatArrays(event2.getPage(offSet%PAGE_SIZE));
+            }
+            else if(blockOffSet == CONTRACT_OFFSET)
+            {
+                res = ByteUtilities.ConcatArrays(contract.getPage(offSet%PAGE_SIZE));
+            }
+            //End of file reached. Resume reading at top of file;
+            else if(blockOffSet > CONTRACT_OFFSET)
+            {
+                offSet = -1;
+                i--;
+            }
+            offSet++;
+        }
+        return res;
+    }
+
+    public void updatePage(int offSet, byte[] newPage)
+    {
+        int blockOffSet = offSet/BLOCK_SIZE;
         if(newPage.length == 4)
         {
-            testID = newPage;
+            if(blockOffSet == HEADER_OFFSET)
+            {
+                header.writePage(offSet%PAGE_SIZE, newPage);
+            }
+            else if(blockOffSet == EVENT1_OFFSET)
+            {
+                event1.writePage(offSet%PAGE_SIZE, newPage);
+            }
+            else if(blockOffSet == EVENT2_OFFSET)
+            {
+                event2.writePage(offSet%PAGE_SIZE, newPage);
+            }
+            else if(blockOffSet == CONTRACT_OFFSET)
+            {
+                contract.writePage(offSet%PAGE_SIZE, newPage);
+            }
         }
     }
 }

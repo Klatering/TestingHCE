@@ -2,8 +2,6 @@ package com.example.lave.testinghce;
 
 import android.nfc.cardemulation.HostApduService;
 import android.os.Bundle;
-import com.example.lave.testinghce.ByteHexStringUtilities;
-import com.example.lave.testinghce.CTProduct;
 
 import java.util.Arrays;
 
@@ -14,8 +12,8 @@ import java.util.Arrays;
  */
 public class CTHostApduService extends HostApduService
 {
-    private static final byte[] SELECT_OK_SW = ByteHexStringUtilities.HexStringToByteArray("9000");
-    private static final byte[] Select_NOK_SW = ByteHexStringUtilities.HexStringToByteArray("6A88");
+    private static final byte[] SELECT_OK_SW = ByteUtilities.HexStringToByteArray("9000");
+    private static final byte[] Select_NOK_SW = ByteUtilities.HexStringToByteArray("6A88");
     private CTProduct product = new CTProduct();
 
 

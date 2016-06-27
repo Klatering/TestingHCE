@@ -5,7 +5,7 @@ package com.example.lave.testinghce;
  */
 public class CTProduct {
 
-    private final int PAGE_SIZE = 4; //A page consists of 4 bytes
+    private static final int PAGE_SIZE = 4; //A page consists of 4 bytes
     private final int BLOCK_SIZE = 4; //A block consists of 4 pages
     private final int UID_BYTE_SIZE = 7; //An UID consists of 7 bytes
     private final int HEADER_OFFSET = 0;
@@ -59,19 +59,19 @@ public class CTProduct {
             blockOffSet = offSet/BLOCK_SIZE;
             if(blockOffSet == HEADER_OFFSET)
             {
-                res = ByteUtilities.ConcatArrays(header.getPage(offSet%PAGE_SIZE));
+                res = ByteUtilities.ConcatArrays(res, header.getPage(offSet%PAGE_SIZE));
             }
             else if(blockOffSet == EVENT1_OFFSET)
             {
-                res = ByteUtilities.ConcatArrays(event1.getPage(offSet%PAGE_SIZE));
+                res = ByteUtilities.ConcatArrays(res, event1.getPage(offSet%PAGE_SIZE));
             }
             else if(blockOffSet == EVENT2_OFFSET)
             {
-                res = ByteUtilities.ConcatArrays(event2.getPage(offSet%PAGE_SIZE));
+                res = ByteUtilities.ConcatArrays(res, event2.getPage(offSet%PAGE_SIZE));
             }
             else if(blockOffSet == CONTRACT_OFFSET)
             {
-                res = ByteUtilities.ConcatArrays(contract.getPage(offSet%PAGE_SIZE));
+                res = ByteUtilities.ConcatArrays(res, contract.getPage(offSet%PAGE_SIZE));
             }
             //End of file reached. Resume reading at top of file;
             else if(blockOffSet > CONTRACT_OFFSET)
@@ -106,5 +106,9 @@ public class CTProduct {
                 contract.writePage(offSet%PAGE_SIZE, newPage);
             }
         }
+    }
+
+    public static int getPAGE_SIZE() {
+        return PAGE_SIZE;
     }
 }

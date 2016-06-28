@@ -78,7 +78,9 @@ public class CTHostApduService extends HostApduService
 
         }
         else
+        {
             return Select_NOK_SW;
+        }
     }
 
     @Override

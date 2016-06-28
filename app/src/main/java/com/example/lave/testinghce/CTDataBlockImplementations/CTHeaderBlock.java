@@ -63,14 +63,16 @@ public class CTHeaderBlock extends CTDataBlock
      */
     @Override
     public void writePage(int page, byte[] newPage) {
-        if (page == 4 && newPage.length == PAGE_SIZE) {
-            for (int i = 0; i < PAGE_SIZE; i++) {
+        if (page == 3 && newPage.length == PAGE_SIZE) {
+            for (int i = 0; i < PAGE_SIZE; i++)
+            {
                 fourthPage[i] = (byte) (newPage[i] | fourthPage[i]);
             }
         }
         //only byte 2 and byte 3 can be written
-        else if (page == 3 && newPage.length == PAGE_SIZE) {
-            for (int i = 2; i < PAGE_SIZE; i++) {
+        else if (page == 2 && newPage.length == PAGE_SIZE) {
+            for (int i = 2; i < PAGE_SIZE; i++)
+            {
                 thirdPage[i] = (byte) (thirdPage[i] | newPage[i]);
             }
         }
